@@ -5,14 +5,14 @@ import (
 	"io"
 	"testing"
 
-	"github.com/dask-58/gTorrent/internal"
+	"github.com/dask-58/gTorrent/internal/bencode"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func decodeHelper(input string) (interface{}, error) {
 	var r io.Reader = bytes.NewBufferString(input)
-	return internal.Decode(r)
+	return bencode.Decode(r)
 }
 
 func TestDecodeInt(t *testing.T) {

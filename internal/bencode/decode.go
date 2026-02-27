@@ -8,7 +8,7 @@
 	Reference: https://wiki.theory.org/BitTorrentSpecification#Bencoding
 */
 
-package internal
+package bencode
 
 import (
 	"bufio" // reduces syscalls
