@@ -11,7 +11,9 @@ import (
 func Encode(val interface{}) ([]byte, error) {
 	switch v := val.(type) {
 	case string:
-		return encodeString(v), nil
+		return encodeBytes([]byte(v)), nil
+	case []byte:
+		return encodeBytes(v), nil
 	case int64:
 		return encodeInt(v), nil
 	case []interface{}:
@@ -23,8 +25,9 @@ func Encode(val interface{}) ([]byte, error) {
 	}
 }
 
-func encodeString(v string) []byte {
-	return []byte(strconv.Itoa(len(v)) + ":" + v)
+func encodeBytes(v []byte) []byte {
+	prefix := []byte(strconv.Itoa(len(v)) + ":")
+	return append(prefix, v...)
 }
 
 func encodeInt(v int64) []byte {
@@ -56,7 +59,7 @@ func encodeDict(v map[string]interface{}) ([]byte, error) {
 	sort.Strings(keys)
 
 	for _, k := range keys {
-		buf.Write(encodeString(k))
+		buf.Write(encodeBytes([]byte(k)))
 		enc, err := Encode(v[k])
 		if err != nil {
 			return nil, err
