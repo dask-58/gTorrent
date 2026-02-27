@@ -12,7 +12,7 @@ import (
 
 func decodeHelper(input string) (interface{}, error) {
 	var r io.Reader = bytes.NewBufferString(input)
-	return internal.Decode(&r)
+	return internal.Decode(r)
 }
 
 func TestDecodeInt(t *testing.T) {

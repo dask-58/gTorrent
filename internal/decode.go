@@ -18,8 +18,8 @@ import (
 	"strconv"
 )
 
-func Decode(r *io.Reader) (interface{}, error) {
-	br := bufio.NewReader(*r)
+func Decode(r io.Reader) (interface{}, error) {
+	br := bufio.NewReader(r)
 	return decode(br)
 }
 
@@ -59,6 +59,10 @@ func rdInt(br *bufio.Reader) (int64, error) {
 
 	// remove e
 	str = str[:len(str)-1]
+
+	if len(str) == 0 {
+		return 0, errors.New("invalid Int: empty")
+	}
 
 	// invalid leading zeroes
 	if len(str) > 1 && str[0] == '0' {
@@ -163,7 +167,7 @@ func rdDict(br *bufio.Reader) (map[string]interface{}, error) {
 		// keys are string
 		key, err := rdByteString(br)
 		if err != nil {
-			return nil, errors.New("dict Key must be a string")
+			return nil, fmt.Errorf("dict key read failed: %w", err)
 		}
 
 		// values can be anything
