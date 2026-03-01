@@ -26,17 +26,15 @@ type TrackerResponse struct {
 
 func GeneratePeerID() ([20]byte, error) {
 	var pID [20]byte
-	copy(pID[:8], "-GT0001-") // fixed: was 9 chars "-GT00001-" which overwrites byte 9
+	copy(pID[:8], "-GT0001-")
 	_, err := rand.Read(pID[8:])
 	return pID, err
 }
 
-// fixed: must use %02x (lowercase hex with percent sign) not %02X
-// Trackers expect standard percent-encoding like %1a not 1A
 func encodeBinary(b []byte) string {
 	var buf strings.Builder
 	for _, c := range b {
-		buf.WriteString(fmt.Sprintf("%%%02x", c))
+		_, _ = fmt.Fprintf(&buf, "%%%02x", c)
 	}
 	return buf.String()
 }
@@ -86,7 +84,7 @@ func Request(tf torrentfile.TorrentFile, peerID [20]byte) (TrackerResponse, erro
 	if err != nil {
 		return TrackerResponse{}, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	if resp.StatusCode != http.StatusOK {
 		return TrackerResponse{}, fmt.Errorf("tracker returned error status: %d %s", resp.StatusCode, resp.Status)

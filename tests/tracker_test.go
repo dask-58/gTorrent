@@ -39,7 +39,7 @@ func TestRequestSuccess(t *testing.T) {
 		assert.Equal(t, "1", r.URL.Query().Get("compact"))
 		assert.Equal(t, "6881", r.URL.Query().Get("port"))
 		w.WriteHeader(http.StatusOK)
-		w.Write(encodedResp)
+		_, _ = w.Write(encodedResp)
 	}))
 	defer server.Close()
 
@@ -84,7 +84,7 @@ func TestRequestFailureReason(t *testing.T) {
 
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
-		w.Write(encodedResp)
+		_, _ = w.Write(encodedResp)
 	}))
 	defer server.Close()
 
